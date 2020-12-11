@@ -1,0 +1,1033 @@
+# R-Programming
+#Packages Required
+
+install.packages("qwraps2") 
+install.packages("g.data")
+install.packages("corrplot")
+install.packages("smbinning")
+install.packages("datarium") 
+install.packages('glmnet')
+install.packages("leaps")
+install.packages("gam")
+install.packages("splines")
+install.packages("foreach")
+install.packages("caret")
+install.packages("e1071")
+library(smbinning)
+library(qwraps2)
+library(corrplot)
+library(caTools)
+library(psych)
+
+#Importing the data into R
+                   
+mydata <- read.csv("Z:/Information Systems/IS 777/dataset_35_dermatology.csv") 
+
+dim(mydata) #Finding the number of Observations and Variables
+
+#Removing the Missing Values (Replacing by mean)
+
+mydata[is.na(mydata)] = 36.30  
+
+mydata
+
+#Converting Integer values to Numeric Values
+mydata[1:35] <- lapply(mydata[1:35], as.numeric)
+
+colnames(mydata)
+
+str(mydata) 
+#Summary of every Variable
+summary(mydata$erythema)
+summary(mydata$scaling)
+summary(mydata$definite_borders)
+summary(mydata$itching)
+summary(mydata$koebner_phenomenon)
+summary(mydata$polygonal_papules)
+summary(mydata$follicular_papules)
+summary(mydata$oral_mucosal_involvement)
+summary(mydata$knee_and_elbow_involvement)
+summary(mydata$scalp_involvement)
+summary(mydata$family_history)
+summary(mydata$melanin_incontinence)
+summary(mydata$eosinophils_in_the_infiltrate)
+summary(mydata$PNL_infiltrate)
+summary(mydata$fibrosis_of_the_papillary_dermis)
+summary(mydata$exocytosis)
+summary(mydata$acanthosis)
+summary(mydata$hyperkeratosis)
+summary(mydata$parakeratosis)
+summary(mydata$clubbing_of_the_rete_ridges)
+summary(mydata$elongation_of_the_rete_ridges)
+summary(mydata$thinning_of_the_suprapapillary_epidermis)
+summary(mydata$spongiform_pustule)
+summary(mydata$munro_microabcess)
+summary(mydata$focal_hypergranulosis)
+summary(mydata$disappearance_of_the_granular_layer)
+summary(mydata$vacuolisation_and_damage_of_basal_layer)
+summary(mydata$spongiosis)
+summary(mydata$saw.tooth_appearance_of_retes)
+summary(mydata$follicular_horn_plug)
+summary(mydata$perifollicular_parakeratosis)
+summary(mydata$inflammatory_monoluclear_inflitrate)
+summary(mydata$band.like_infiltrate)
+summary(mydata$Age)
+summary(mydata$class)
+
+
+#Histogram
+
+counts <- table(mydata$erythema)
+barplot(counts, main="Erythema",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$scaling)
+barplot(counts, main="scaling",
+        ylim = c(0,200),
+        ylab="Frequency")
+
+counts <- table(mydata$definite_borders)
+barplot(counts, main="definite_borders",
+        ylim = c(0,200),
+        ylab="Frequency")
+
+counts <- table(mydata$itching)
+barplot(counts, main="itching",
+        ylim = c(0,200),
+        ylab="Frequency")
+
+counts <- table(mydata$koebner_phenomenon)
+barplot(counts, main="koebner_phenomenon",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$polygonal_papules)
+barplot(counts, main="polygonal_papules",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$follicular_papules)
+barplot(counts, main="follicular_papules",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$oral_mucosal_involvement)
+barplot(counts, main="oral_mucosal_involvement",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$knee_and_elbow_involvement)
+barplot(counts, main="knee_and_elbow_involvement",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$scalp_involvement)
+barplot(counts, main="scalp_involvement",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$family_history)
+barplot(counts, main="family_history",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$melanin_incontinence)
+barplot(counts, main="melanin_incontinence",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$eosinophils_in_the_infiltrate)
+barplot(counts, main="eosinophils_in_the_infiltrate",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$PNL_infiltrate)
+barplot(counts, main="PNL_infiltrate",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$fibrosis_of_the_papillary_dermis)
+barplot(counts, main="fibrosis_of_the_papillary_dermis",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$exocytosis)
+barplot(counts, main="exocytosis",
+        ylim = c(0,150),
+        ylab="Frequency")
+
+counts <- table(mydata$acanthosis)
+barplot(counts, main="acanthosis",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$hyperkeratosis)
+barplot(counts, main="hyperkeratosis",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$parakeratosis)
+barplot(counts, main="parakeratosis",
+        ylim = c(0,150),
+        ylab="Frequency")
+
+counts <- table(mydata$clubbing_of_the_rete_ridges)
+barplot(counts, main="clubbing_of_the_rete_ridges",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$elongation_of_the_rete_ridges)
+barplot(counts, main="elongation_of_the_rete_ridges",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$thinning_of_the_suprapapillary_epidermis)
+barplot(counts, main="thinning_of_the_suprapapillary_epidermis",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$spongiform_pustule)
+barplot(counts, main="spongiform_pustule",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$munro_microabcess)
+barplot(counts, main="munro_microabcess",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$focal_hypergranulosis)
+barplot(counts, main="focal_hypergranulosis",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$disappearance_of_the_granular_layer)
+barplot(counts, main="disappearance_of_the_granular_layer",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$vacuolisation_and_damage_of_basal_layer)
+barplot(counts, main="vacuolisation_and_damage_of_basal_layer",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$spongiosis)
+barplot(counts, main="spongiosis",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$saw.tooth_appearance_of_retes)
+barplot(counts, main="saw.tooth_appearance_of_retes",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+counts <- table(mydata$follicular_horn_plug)
+barplot(counts, main="follicular_horn_plug",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$perifollicular_parakeratosis)
+barplot(counts, main="perifollicular_parakeratosis",
+        ylim = c(0,350),
+        ylab="Frequency")
+
+counts <- table(mydata$inflammatory_monoluclear_inflitrate)
+barplot(counts, main="inflammatory_monoluclear_inflitrate",
+        ylim = c(0,250),
+        ylab="Frequency")
+
+counts <- table(mydata$band.like_infiltrate)
+barplot(counts, main="band.like_infiltrate",
+        ylim = c(0,300),
+        ylab="Frequency")
+
+hist(mydata$Age,
+     main = "Age",
+     xlab = "Histogram for Age",
+     border = "blue",
+     col = "yellow")
+
+counts <- table(mydata$class)
+barplot(counts, main="class",
+        ylim = c(0,150),
+        ylab="Frequency")
+
+#Correlation matrix 
+corr<-cor(mydata)
+M<-cor(mydata[1:35])
+head(round(M,2))
+#upper.triangle(M)
+colnames(M) <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+                 ,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35)
+rownames(M) <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+                 ,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35)
+corrplot(M,type="upper")
+
+#1: erythema, 2: scaling, 3: definite borders, 4: itching, 5: koebner phenomenon, 6: polygonal
+#papules, 7: follicular papules, 8: oral mucosal involvement, 9: knee and elbow involvement, 10:
+# scalp involvement, 11: family history, 12: melanin incontinence, 13: eosinophils in the infiltrate,
+#14: PNL infiltrate, 15: fibrosis of the papillary dermis, 16: exocytosis, 17: acanthosis, 18:
+# hyperkeratosis, 19: parakeratosis, 20: clubbing of the rete ridges, 21: elongation of the rete ridges,
+#22: thinning of the suprapapillary epidermis, 23: spongiform pustule, 24: munro microabscess, 25:
+ # focal hypergranulosis, 26: disappearance of the granular layer, 27: vacuolation and damage of
+#basal layer, 28: spongiosis, 29: saw-tooth appearance of retes, 30: follicular horn plug, 31:
+ # perifollicular parakeratosis, 32: inflammatory mononuclear infiltrate, 33: band-like infiltrate, 34:
+  #Age, 35: Class
+
+#Logistic regression 
+head(mydata)
+
+table(mydata$family_history)
+
+#Splitting into Test and Training Data
+
+# Create Training Data
+Value_one <- mydata[which(mydata$family_history == 1), ]  # All 1
+Value_zero <- mydata[which(mydata$family_history == 0), ]  # All 0 together
+
+set.seed(200)  # Repeat the samples
+
+Value_one_training <- sample(1:nrow(Value_one), 0.7*nrow(Value_one))  # 1's for training
+Value_one_training <- sample(1:nrow(Value_zero), 0.7*nrow(Value_zero))  # 0's for training, also select equal number of 0 and 1
+
+training_one <- Value_one[Value_one_training, ]  
+training_zero <- Value_zero[Value_one_training, ]
+trainingData <- rbind(training_one, training_zero)  # Binding rows with the values
+
+# Create Test Data
+test_ones <- Value_one[-Value_one_training, ]
+test_zeros <- Value_zero[-Value_one_training, ]
+testData <- rbind(test_ones, test_zeros)  # Binding rows with the values
+
+#Computation of Important Variable
+factor_vars <- c ("Erythema","scaling","efinite_borders","itching","koebner_phenomenon","polygonal_papules",
+                  "follicular_papules","oral_mucosal_involvement","knee_and_elbow_involvement","scalp_involvement","family_history",
+                  "melanin_incontinence","eosinophils_in_the_infiltrate","PNL_infiltrate","fibrosis_of_the_papillary_dermis","exocytosis",
+                  "acanthosis","hyperkeratosis","parakeratosis","clubbing_of_the_rete_ridges)elongation_of_the_rete_ridges",
+                  "thinning_of_the_suprapapillary_epidermis","munro_microabcess","focal_hypergranulosis","disappearance_of_the_granular_layer",
+                  "vacuolisation_and_damage_of_basal_layer","spongiosis","saw.tooth_appearance_of_retes","follicular_horn_plug",
+                  "perifollicular_parakeratosis","inflammatory_monoluclear_inflitrate","band.like_infiltrate","Class")
+continuous_vars <- c("Age")
+
+iv_df <- data.frame(VARS=c(factor_vars, continuous_vars), IV=numeric(33))  # init for IV results
+
+# compute IV for categoricals
+for(factor_var in factor_vars){
+  smb <- smbinning.factor(trainingData, y="Family History", x=factor_var)  # WOE table
+  if(class(smb) != "character"){ # heck if some error occured
+    iv_df[iv_df$VARS == factor_var, "IV"] <- smb$iv
+  }
+}
+
+# compute IV for continuous vars
+for(continuous_var in continuous_vars){
+  smb <- smbinning(trainingData, y="Family History", x=continuous_var)  # WOE table
+  if(class(smb) != "character"){  # any error while calculating scores.
+    iv_df[iv_df$VARS == continuous_var, "IV"] <- smb$iv
+  }
+}
+
+iv_df <- iv_df[order(-iv_df$IV), ]  # sort
+iv_df
+
+#LDA
+library(qwraps2)
+library(caTools)
+library(psych)
+
+mydata <- read.csv("Z:/Information Systems/IS 777/dataset_35_dermatology.csv")
+mydata[,'class']<-factor(mydata[,'class'])
+mydata$Age <- as.numeric(as.character(mydata$Age))
+mydata[1:33] <- lapply(mydata[1:33], factor)
+
+set.seed(150)
+split = sample.split(mydata$class, SplitRatio = 0.50)
+
+# Create training and testing sets
+train = subset(mydata, split == TRUE)
+test = subset(mydata, split == FALSE)
+
+
+dim(train); dim(test)
+
+#ScatterPlot
+
+library(psych)
+pairs.panels(mydata[1:34], gap = 0, bg = c("red","green",
+                                           "blue","yellow","black","orange")[mydata$class],pch = 21)
+
+#LDA implementation
+
+library(MASS)
+linear <- lda(class~., train)
+linear
+
+# check split
+linear$prior
+linear$counts
+
+#Prediction 
+p <- predict(linear, train)
+
+
+#KNN
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,
+                                       19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=19)
+
+#creating the confusion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+
+#Model for highly correlated variables
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(6,7,8,12,20,22,25,27,29,30,31,33)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=20)
+
+#createing the confucion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+#Model for less correlated variables
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(9,10,15,16,20,21,22)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=20)
+
+#createing the confucion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+#Model for non-related variables
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(1,2,3,4,5,6,7,8,9,10,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,33,34)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=20)
+
+#creating the confusion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+
+#Model for variables selected with the help of correlation matrix
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(1,2,3,4,5,9,10,11,
+                                       12,13,14,15,17,18,19,22,23,24,26,28,32,34)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=19)
+
+#createing the confucion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+#Naive Bayes
+#Packages Required
+library(ggplot2) 
+require(ggiraph)
+require(ggiraphExtra)
+require(plyr)
+library(ROCR)
+library(Hmisc)
+library(tidyverse)
+library(caret)
+library(caretEnsemble)
+library(psych)
+library(Amelia)
+library(mice)
+library(GGally)
+library(rpart)
+library(randomForest)
+library(class)
+library(e1071)
+library(gmodels)
+library(qwraps2)
+
+#Importing the data into R
+dim(mydata) #Finding the number of Observations and Variables
+#Removing the Missing Values (Replacing by mean)
+mydata[is.na(mydata)] = 36.30  
+
+#Converting Integer values to Numeric Values
+mydata[1:34] <- lapply(mydata[1:34], factor)
+
+mydata[35] <- lapply(mydata[35], factor)
+
+xTrain <- createDataPartition(y = mydata$class ,p = 0.75,list = FALSE)
+
+train <- mydata[xTrain,]
+test <- mydata[-xTrain,]
+
+prop.table(table(train$class)) * 100
+
+#create objects x which holds the predictor variables and y which holds the response variables
+x = train[1,2,3,4,5,9,10,11,
+          12,13,14,15,17,18,19,22,23,24,26,28,32,34]
+y = train$class
+
+model <- naiveBayes(x , y)
+
+Pred <- predict(model, newdata = test )
+Accuracy <- mean(Pred == test$class)
+print(paste('Accuracy', Accuracy))
+
+###RESAMPLING
+library(tidyverse) 
+library(caret) 
+
+# loading the dataset 
+data("mydata", package = "datarium") 
+
+# inspecting the dataset 
+head(mydata)
+
+
+# validation set approach 
+
+set.seed(123) 
+
+# creating training data as 98% of the dataset 
+random_sample <- createDataPartition(mydata $ class,  
+                                     p = 0.75, list = FALSE) 
+
+# generating training dataset 
+
+training_dataset  <- mydata[random_sample, ] 
+
+# generating testing dataset 
+
+testing_dataset <- mydata[-random_sample, ] 
+
+# Building the model 
+
+
+model <- lm(class ~., data = training_dataset) 
+
+# predicting the target variable 
+predictions <- predict(model, testing_dataset) 
+
+# computing model performance metrics 
+data.frame( R2 = R2(predictions, testing_dataset $ class), 
+            RMSE = RMSE(predictions, testing_dataset $ class), 
+            MAE = MAE(predictions, testing_dataset $ class))
+
+#LOOCV
+
+
+# Leave One Out Cross Validation 
+train_control <- trainControl(method = "LOOCV") 
+
+# training the model
+# as target variable and rest other column 
+# as independent varaible 
+model <- train(class ~., data = mydata,  
+               method = "lm", 
+               trControl = train_control) 
+
+# printing model performance metrics 
+# along with other details 
+print(model)
+
+
+#5 Fold Cross Validation
+
+set.seed(125)  
+
+# value of K equal to 5 
+train_control <- trainControl(method = "cv", 
+                              number = 5) 
+
+# training the model by assigning class column 
+
+model <- train(class ~., data = mydata,  
+               method = "lm", 
+               trControl = train_control) 
+
+# printing model performance metrics 
+# along with other details 
+print(model)
+
+#####Bootstrap
+help.search( 'bootstrap') 
+
+boot.fn<- function (data ,index ){
+  return (coef(lm( class~Age, data= mydata , subset = index )))
+}
+
+head(mydata)
+
+alpha.fn = function(data,index ) {
+  X = data$X[index]
+  Y = data$Y[index]
+  return ((var(Y)-cov(X,Y))/(var(X)+var(Y)-2*cov(X,Y)))
+}
+
+mean(mydata$Age)
+
+library(boot)
+#creating function to get R suared values from the data
+r_squared <- function(formula, data, indices) {
+  val <- mydata[indices,] # selecting sample with boot 
+  fit <- lm(formula, data=val)
+  return(summary(fit)$r.square)
+} 
+
+# Performing 1000 replications with boot for random features  
+output <- boot(data=mydata, statistic=r_squared,R=1000, formula=class~acanthosis+erythema
+               +scaling+definite_borders+itching+koebner_phenomenon+polygonal_papules
+               +follicular_papules+oral_mucosal_involvement+knee_and_elbow_involvement
+               +scalp_involvement+family_history+Age
+)
+
+#Plotting the output
+output
+plot(output)
+
+#obtaining the confidence level of 95%
+boot.ci(output, type="bca")
+
+
+# Performing 1000 replications with boot for important features
+output <- boot(data=mydata, statistic=r_squared,R=1000, formula=class~erythema+scaling
+               +definite_borders+itching+koebner_phenomenon+knee_and_elbow_involvement
+               +scalp_involvement+family_history+melanin_incontinence
+               +eosinophils_in_the_infiltrate+PNL_infiltrate
+               +fibrosis_of_the_papillary_dermis+acanthosis+hyperkeratosis+parakeratosis
+               +thinning_of_the_suprapapillary_epidermis+spongiform_pustule
+               +munro_microabcess+disappearance_of_the_granular_layer+spongiosis
+               +inflammatory_monoluclear_inflitrate+Age)
+
+#Plotting the output
+output
+plot(output)
+
+#obtaining the confidence level of 95%
+boot.ci(output, type="bca")
+
+
+# Performing 1000 replications with boot for random features 
+output <- boot(data=mydata, statistic=r_squared,R=1000, formula=class~parakeratosis+clubbing_of_the_rete_ridges+elongation_of_the_rete_ridges+thinning_of_the_suprapapillary_epidermis+spongiform_pustule+munro_microabcess+focal_hypergranulosis+disappearance_of_the_granular_layer+vacuolisation_and_damage_of_basal_layer+spongiosis+follicular_horn_plug+perifollicular_parakeratosis+inflammatory_monoluclear_inflitrate+Age
+)
+
+#Plotting the output
+output
+plot(output)
+
+#obtaining the confidence level of 95%
+boot.ci(output, type="bca")
+
+
+#### Bootstrap on KNN
+smp_size <- floor(0.75 * nrow(mydata))
+
+## set the seed to make your partition reproducible
+set.seed(123)
+train_ind <- sample(seq_len(nrow(mydata)), size = smp_size)
+
+train <- mydata[train_ind, ]
+test <- mydata[-train_ind, ]
+
+train_m=as.matrix(train)
+is.matrix(train_m)
+colnames(train_m)
+
+library(caret)
+library(e1071)
+
+#KNN
+#Bootstap
+train_control <- trainControl(method="boot", number=10)
+# train the model
+model1<- train(class ~erythema+scaling
+               +definite_borders+itching+koebner_phenomenon+knee_and_elbow_involvement
+               +scalp_involvement+family_history+melanin_incontinence
+               +eosinophils_in_the_infiltrate+PNL_infiltrate
+               +fibrosis_of_the_papillary_dermis+acanthosis+hyperkeratosis+parakeratosis
+               +thinning_of_the_suprapapillary_epidermis+spongiform_pustule
+               +munro_microabcess+disappearance_of_the_granular_layer+spongiosis
+               +inflammatory_monoluclear_inflitrate+Age, data=train_m, trControl=train_control,method="knn",tuneLength=10)
+# summarize results
+print(model1)
+plot(model1)
+
+
+###################### Stepwise selection methods
+
+#KNN
+#storing data as dataframe
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 22, 23, 24, 26, 28, 32, 34)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=18)
+
+#createing the confucion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+
+#Forward Selection on KNN Model
+
+#KNN
+#storing data as dataframe
+stringsAsFactors = FALSE
+str(mydata) 
+mydata[is.na(mydata)] = 36.30
+
+dia <- data.frame(mydata)
+
+#Creating random number equal to 80% of total number of rows
+ran <- sample(1:nrow(dia),0.80 * nrow(dia))
+
+#Creating normalization function
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+dia_nor <- as.data.frame(lapply(dia[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,
+                                       19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34)], nor))
+
+#training dataset extracted
+dia_train <- dia_nor[ran,]
+
+#test dataset extracted
+dia_test <- dia_nor[-ran,]
+
+#Extracting the class column as a target
+dia_target <- as.factor(dia[ran,35])
+
+test_target <- as.factor(dia[-ran,35])
+
+#Run KNN function
+library(class)
+pr <- knn(dia_train,dia_test,cl=dia_target,k=19)
+
+#creating the confusion matrix
+tb <- table(pr,test_target)
+print(tb)
+
+#Calculating the accuracy
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(tb)
+
+#Forward Selection on KNN Model
+
+library(tidyverse)
+library(lattice)
+library(caret)
+library(leaps)
+library(dplyr)
+library(MASS)
+
+full.model <- lm(class ~., data = mydata)
+# Stepwise regression model
+step.model <- stepAIC(full.model, direction = "forward", 
+                      trace = FALSE)
+summary(step.model)
+
+models <- regsubsets(class~., data = mydata, nvmax = 5,
+                     method = "seqrep")
+summary(models)
+
+
+# Set seed 
+set.seed(123)
+# repeated k-fold cross-validation. In this case k is 10
+train.control <- trainControl(method = "cv", number = 10)
+# Train the model
+step.model <- train(class ~., data = mydata,
+                    method = "leapForward", 
+                    tuneGrid = data.frame(nvmax = 1:33),
+                    trControl = train.control
+)
+step.model$results
+
+step.model$bestTune
+
+
+summary(step.model$finalModel)
+
+
+coef(step.model$finalModel, 12)
+
+
+lm(class ~ scaling + itching + koebner_phenomenon +follicular_papules + oral_mucosal_involvement+
+     eosinophils_in_the_infiltrate+ PNL_infiltrate  + fibrosis_of_the_papillary_dermis + clubbing_of_the_rete_ridges +
+     thinning_of_the_suprapapillary_epidermis + munro_microabcess +
+     perifollicular_parakeratosis, 
+   data = mydata)
+
+#Backward Model Selection
+full.model <- lm(class ~., data = mydata)
+# Backward Step Regression
+step.model <- stepAIC(full.model, direction = "backward", 
+                      trace = FALSE)
+summary(step.model)
+
+models <- regsubsets(class~., data = mydata, nvmax = 5,
+                     method = "seqrep")
+summary(models)
+
+
+# Set seed 
+set.seed(123)
+# repeated k-fold cross-validation
+train.control <- trainControl(method = "cv", number = 10)
+# Train the model
+step.model <- train(class ~., data = mydata,
+                    method = "leapBackward", 
+                    tuneGrid = data.frame(nvmax = 1:33),
+                    trControl = train.control
+)
+step.model$results
+
+step.model$bestTune
+
+
+summary(step.model$finalModel)
+
+
+coef(step.model$finalModel, 12)
+
+
+lm(class ~ scaling + itching + koebner_phenomenon +follicular_papules + oral_mucosal_involvement+
+     eosinophils_in_the_infiltrate+ PNL_infiltrate  + fibrosis_of_the_papillary_dermis + clubbing_of_the_rete_ridges +
+     thinning_of_the_suprapapillary_epidermis + munro_microabcess +
+     perifollicular_parakeratosis,
+   data = mydata)
+
+
+#ridge regression
+
+# Data Splitting into Test and Train
+set.seed(123)
+library(tidyr)
+training.samples <- mydata$class %>%
+  createDataPartition(p = 0.8, list = FALSE)
+train.data  <- mydata[training.samples, ]
+test.data <- mydata[-training.samples, ]
+
+
+# Predictor 
+x <- model.matrix(class~., train.data)[,-1]
+# Outcome 
+y <- train.data$class
+library(glmnet)
+glmnet(x, y, alpha = 1, lambda = NULL)
+
+
+# Best Lambda Value using Cross Validation
+set.seed(123) 
+cv <- cv.glmnet(x, y, alpha = 0)
+# Lambda Value
+cv$lambda.min
+
+# Implement final model on training set
+model <- glmnet(x, y, alpha = 0, lambda = cv$lambda.min)
+#regression coefficients
+coef(model)
+
+
+# predictions on the test data
+x.test <- model.matrix(class ~., test.data)[,-1]
+predictions <- model %>% predict(x.test) %>% as.vector()
+# Model performance 
+data.frame(
+  RMSE = RMSE(predictions, test.data$class),
+  Rsquare = R2(predictions, test.data$class)
+)
+
+
+
+#Lasso
+
+# best lambda using cross-validation
+set.seed(123) 
+cv <- cv.glmnet(x, y, alpha = 1)
+#  lambda value
+cv$lambda.min
+
+
+# final model on the training data
+model <- glmnet(x, y, alpha = 1, lambda = cv$lambda.min)
+# regression coefficients
+coef(model)
+
+# predictions on the test data
+x.test <- model.matrix(class ~., test.data)[,-1]
+predictions <- model %>% predict(x.test) %>% as.vector()
+# Model performance 
+data.frame(
+  RMSE = RMSE(predictions, test.data$class),
+  Rsquare = R2(predictions, test.data$class)
+)
+
+###GAD
+library(gam)  # To search on the gam function
+
+gamdata <- mydata
+#fitting smooth splines
+logitgam.m1<-gam(scaling ~ s(Age,df=5) + s(class,df=4) + erythema + itching ,data=mydata,family_history=binomial)
+
+
+summary(logitgam.m1)
+par(mfrow=c(1,4))
+plot(logitgam.m1, se=TRUE,col="blue") 
+
+#Linear model
+logitgam.m2<-gam(scaling ~ s(Age,df=5) + class + itching + erythema,data=gamdata,family_history=binomial)
+plot(logitgam.m2,se=TRUE)
+
+#Choosing the best model
+
+anova(logitgam.m1,logitgam.m2, test = "Chisq")
